@@ -7,35 +7,39 @@ import SaveBtn from "./components/inputCon/SaveBtn";
 import Search from "./components/listArea/Search";
 import InfoList from "./components/listArea/InfoList";
 
-const dump = [
-  {
-    name: "박은규",
-    phone: "010-1111-1111",
-    group: "가족",
-  },
-  {
-    name: "김영희",
-    phone: "010-2222-2222",
-    group: "직장",
-  },
-  {
-    name: "박민수",
-    phone: "010-3333-3333",
-    group: "친구",
-  },
-  {
-    name: "순삼이",
-    phone: "010-4444-4444",
-    group: "친구",
-  },
-];
 function App() {
+  // 등록 정보 데이터
   const [formData, setFormData] = useState({
     이름: "",
     전화번호: "",
     그룹: "",
     정보: "",
   });
+  // 검색 입력 데이터
+  const [search, setSearch] = useState("");
+  const [searchResult, setSearchResult] = useState([]); // 검색 결과 저장
+  const [isAll, setIsAll] = useState(true); // 전체 결과 보기 여부
+
+  const searchHandler = (e) => {
+    setSearch(e.target.value);
+    if (e.key === "Enter") {
+      const storedList = JSON.parse(localStorage.getItem("list")) || [];
+
+      // 검색어와 일치하는 항목 필터링
+      const filteredResults = storedList.filter((item) => {
+        return (
+          item.이름.includes(search) ||
+          item.전화번호.includes(search) ||
+          item.그룹.includes(search)
+        );
+      });
+
+      setSearchResult(filteredResults);
+      setIsAll(false);
+      e.target.value = "";
+    }
+  };
+  // console.log(search.target.value);
 
   const inputHandler = (e) => {
     const { name, value } = e.target;
@@ -82,12 +86,16 @@ function App() {
           <SaveBtn />
         </form>
         <div className="infoCon">
-          <Search />
-          <InfoList list={dump} />
+          <Search onChange={searchHandler} isAll={() => setIsAll(true)} />
+          <InfoList
+            list={
+              isAll ? JSON.parse(localStorage.getItem("list")) : searchResult
+            }
+          />
         </div>
       </main>
     </>
   );
 }
-
+// JSON.parse(localStorage.getItem("list"))
 export default App;
