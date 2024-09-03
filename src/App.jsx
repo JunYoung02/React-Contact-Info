@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Header from "./components/header/Header";
 import Input from "./components/inputCon/Input";
@@ -19,14 +19,15 @@ function App() {
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]); // 검색 결과 저장
   const [isAll, setIsAll] = useState(true); // 전체 결과 보기 여부
+  const [list, setList] = useState([]); // 전체 결과 데이터 저장
 
   const searchHandler = (e) => {
     setSearch(e.target.value);
     if (e.key === "Enter") {
-      const storedList = JSON.parse(localStorage.getItem("list")) || [];
+      const list = JSON.parse(localStorage.getItem("list")) || [];
 
       // 검색어와 일치하는 항목 필터링
-      const filteredResults = storedList.filter((item) => {
+      const filteredResults = list.filter((item) => {
         return (
           item.이름.includes(search) ||
           item.전화번호.includes(search) ||
@@ -59,9 +60,10 @@ function App() {
         return;
       }
     }
-    const prevList = JSON.parse(localStorage.getItem("list")) || [];
-    const currentList = [...prevList, formData];
-    localStorage.setItem("list", JSON.stringify(currentList));
+    const newList = [...list, formData];
+    localStorage.setItem("list", JSON.stringify(newList));
+    setList(newList);
+
     setFormData({
       이름: "",
       전화번호: "",
@@ -69,6 +71,17 @@ function App() {
       정보: "",
     });
   };
+
+  const updateHandler = (newList) => {
+    localStorage.setItem("list", JSON.stringify(newList));
+    setList(newList);
+  };
+
+  useEffect(() => {
+    // 초기 데이터 로딩
+    const storedList = JSON.parse(localStorage.getItem("list")) || [];
+    setList(storedList);
+  }, []);
 
   return (
     <>
@@ -88,9 +101,8 @@ function App() {
         <div className="infoCon">
           <Search onChange={searchHandler} isAll={() => setIsAll(true)} />
           <InfoList
-            list={
-              isAll ? JSON.parse(localStorage.getItem("list")) : searchResult
-            }
+            list={isAll ? list : searchResult}
+            updateList={updateHandler}
           />
         </div>
       </main>
