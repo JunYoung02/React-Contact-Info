@@ -1,4 +1,4 @@
-function InfoList({ list, updateList }) {
+function InfoList({ list, updateList, detailModal }) {
   console.log(list);
 
   const deleteHandler = (index) => {
@@ -16,7 +16,9 @@ function InfoList({ list, updateList }) {
             <span>{info.그룹}</span>
 
             <div className="btnCon">
-              <button>세부사항</button>
+              <button type="button" onClick={() => detailModal(index)}>
+                세부사항
+              </button>
               <button type="button" onClick={() => deleteHandler(index)}>
                 삭제
               </button>

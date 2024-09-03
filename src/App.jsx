@@ -15,11 +15,19 @@ function App() {
     그룹: "",
     정보: "",
   });
+  // 세부사항 모달 데이터
+  const [detailData, setDetailData] = useState({
+    이름: "",
+    전화번호: "",
+    그룹: "",
+    정보: "",
+  });
   // 검색 입력 데이터
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]); // 검색 결과 저장
   const [isAll, setIsAll] = useState(true); // 전체 결과 보기 여부
   const [list, setList] = useState([]); // 전체 결과 데이터 저장
+  const [isDetail, setIsDetail] = useState(false); // 세부사항 모달 open 여부
 
   const searchHandler = (e) => {
     setSearch(e.target.value);
@@ -77,6 +85,22 @@ function App() {
     setList(newList);
   };
 
+  // detail 모달 open
+  const detailModalHandler = (id) => {
+    console.log(id);
+    const detailInfo = list.find((item, index) => id === index);
+
+    console.log(detailInfo);
+    setDetailData({
+      이름: detailInfo.이름,
+      전화번호: detailInfo.전화번호,
+      그룹: detailInfo.그룹,
+      정보: detailInfo.정보,
+    });
+    setIsDetail(true);
+  };
+  console.log(detailData);
+
   useEffect(() => {
     // 초기 데이터 로딩
     const storedList = JSON.parse(localStorage.getItem("list")) || [];
@@ -85,27 +109,55 @@ function App() {
 
   return (
     <>
-      <Header />
-      <main>
-        <form onSubmit={submitHandler}>
-          <Input name="이름" value={formData.이름} onChange={inputHandler} />
-          <Input
-            name="전화번호"
-            value={formData.전화번호}
-            onChange={inputHandler}
-          />
-          <Select name="그룹" onChange={inputHandler} value={formData.그룹} />
-          <Input name="정보" value={formData.정보} onChange={inputHandler} />
-          <SaveBtn />
-        </form>
-        <div className="infoCon">
-          <Search onChange={searchHandler} isAll={() => setIsAll(true)} />
-          <InfoList
-            list={isAll ? list : searchResult}
-            updateList={updateHandler}
-          />
+      {isDetail ? (
+        <div className="backdrop">
+          <div className="modal">
+            <button className="closeBtn" onClick={() => setIsDetail(false)}>
+              닫기
+            </button>
+            <h1>연락처 상세 정보</h1>
+            <div>
+              <p>
+                <span>이름:</span> {detailData.이름}
+              </p>
+              <p>
+                <span>전화번호:</span> {detailData.전화번호}
+              </p>
+              <p>
+                <span>그룹:</span> {detailData.그룹}
+              </p>
+              <p>
+                <span>메모:</span> {detailData.정보}
+              </p>
+            </div>
+          </div>
         </div>
-      </main>
+      ) : null}
+
+      <div className="wrapper">
+        <Header />
+        <main>
+          <form onSubmit={submitHandler}>
+            <Input name="이름" value={formData.이름} onChange={inputHandler} />
+            <Input
+              name="전화번호"
+              value={formData.전화번호}
+              onChange={inputHandler}
+            />
+            <Select name="그룹" onChange={inputHandler} value={formData.그룹} />
+            <Input name="정보" value={formData.정보} onChange={inputHandler} />
+            <SaveBtn />
+          </form>
+          <div className="infoCon">
+            <Search onChange={searchHandler} isAll={() => setIsAll(true)} />
+            <InfoList
+              list={isAll ? list : searchResult}
+              updateList={updateHandler}
+              detailModal={detailModalHandler}
+            />
+          </div>
+        </main>
+      </div>
     </>
   );
 }
