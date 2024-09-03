@@ -1,5 +1,9 @@
 function SaveBtn() {
-  return <button className="submitBtn">저장</button>;
+  return (
+    <button type="submit" className="submitBtn">
+      저장
+    </button>
+  );
 }
 
 export default SaveBtn;

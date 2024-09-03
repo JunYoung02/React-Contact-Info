@@ -1,9 +1,10 @@
-function Select() {
+function Select({ name, onChange, value }) {
   return (
     <div className="selectCon">
-      <label htmlFor="그룹">그룹</label>
+      <label htmlFor="그룹">{name}</label>
       <div>
-        <select id="그룹">
+        <select id="그룹" onChange={onChange} value={value} name={name}>
+          <option value="">선택하세요</option>
           <option value="가족">가족</option>
           <option value="직장">직장</option>
           <option value="친구">친구</option>
