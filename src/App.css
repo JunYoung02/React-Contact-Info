@@ -24,6 +24,27 @@
   z-index: 3;
   background: rgba(0, 0, 0, 0.45);
 }
+.modal {
+  width: 20em;
+  height: 25rem;
+  background-color: #fff;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 1rem;
+}
+.modal > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 5px;
+}
+/* main Content */
 h1 {
   text-align: center;
 }
@@ -43,6 +64,7 @@ form {
   min-width: 300px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 5px;
   border: 1px solid #b9b9b9;
   padding: 1rem;
@@ -79,6 +101,10 @@ form .selectCon div {
 }
 form .selectCon div select {
   flex: 1;
+}
+form .errorMsg {
+  font-size: 0.7rem;
+  color: #f38b7d;
 }
 
 /* search container */
