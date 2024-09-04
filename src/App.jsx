@@ -7,6 +7,7 @@ import SaveBtn from "./components/inputCon/SaveBtn";
 import Search from "./components/listArea/Search";
 import InfoList from "./components/listArea/InfoList";
 import Detail from "./components/modal/Detail";
+import Group from "./components/modal/Group";
 
 function App() {
   // 등록 정보 데이터
@@ -36,6 +37,8 @@ function App() {
   const [isAll, setIsAll] = useState(true); // 전체 결과 보기 여부
   const [list, setList] = useState([]); // 전체 결과 데이터 저장
   const [isDetail, setIsDetail] = useState(false); // 세부사항 모달 open 여부
+  const [isGroup, setIsGroup] = useState(false); // 그룹 추가 모달 open 여부
+  const [groupLi, setGroupLi] = useState(["가족", "직장", "친구"]);
 
   // input 정규표현식으로 유효성 검사
   const validateInput = (name, value) => {
@@ -144,7 +147,11 @@ function App() {
     });
     setIsDetail(true);
   };
-  console.log(detailData);
+
+  const addGroupHandler = (input) => {
+    setGroupLi((prev) => [...prev, input]);
+    setIsGroup(false);
+  };
 
   useEffect(() => {
     // 초기 데이터 로딩
@@ -156,6 +163,14 @@ function App() {
     <>
       {isDetail ? (
         <Detail detailData={detailData} closeBtn={() => setIsDetail(false)} />
+      ) : null}
+
+      {isGroup ? (
+        <Group
+          onClick={addGroupHandler}
+          closeBtn={() => setIsGroup(false)}
+          groupLi={groupLi}
+        />
       ) : null}
 
       <div className="wrapper">
@@ -172,7 +187,13 @@ function App() {
             {errors.전화번호 && (
               <span className="errorMsg">{errors.전화번호}</span>
             )}
-            <Select name="그룹" onChange={inputHandler} value={formData.그룹} />
+            <Select
+              name="그룹"
+              onChange={inputHandler}
+              value={formData.그룹}
+              openGroup={() => setIsGroup(true)}
+              groupLi={groupLi}
+            />
             {errors.그룹 && <span className="errorMsg">{errors.그룹}</span>}
             <Input name="정보" value={formData.정보} onChange={inputHandler} />
             {errors.정보 && <span className="errorMsg">{errors.정보}</span>}
